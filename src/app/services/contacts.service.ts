@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { Contact } from '../models/contact.interface';
 
 @Injectable({
@@ -58,6 +58,10 @@ export class ContactsService {
       "phone": "415-903-2878x1895"
     }
   ]);
+
+  totalContacts = computed<number>(() => this.contacts().length);
+
+  maxReached = computed<boolean>(() => this.contacts().length >= 12);
 
   constructor() { }
 

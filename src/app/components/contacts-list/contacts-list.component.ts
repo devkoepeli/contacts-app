@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { ContactsService } from '../../services/contacts.service';
 import { Contact } from '../../models/contact.interface';
+import { MaxReachedModalComponent } from '../max-reached-modal/max-reached-modal.component';
 
 @Component({
   selector: 'app-contacts-list',
   standalone: true,
-  imports: [],
+  imports: [MaxReachedModalComponent],
   template: `
     <section>
       <div class="container">
@@ -25,6 +26,9 @@ import { Contact } from '../../models/contact.interface';
           }
         </ul>
       </div>
+      @if (maxReached() && !modalIsRead) {
+        <app-max-reached-modal (modalClosed)=changeModalState($event)></app-max-reached-modal>
+      }
     </section>
   `,
   styles: `
@@ -68,9 +72,16 @@ export class ContactsListComponent {
 
   contactsService = inject(ContactsService);
   contacts = this.contactsService.contacts;
+  maxReached = this.contactsService.maxReached;
+
+  modalIsRead = false;
 
   deleteContact(contact: Contact) {
     this.contactsService.deleteContact(contact);
+  }
+
+  changeModalState(isModalRead: boolean) {
+    this.modalIsRead = isModalRead;
   }
 
 }
